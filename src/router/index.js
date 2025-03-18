@@ -5,15 +5,35 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
+    redirect:'/index',//为什么这里改成home就不行了？
+    children:[
+      {path:'/index',component:()=>import('../views/home/IndexView')},
+      {path:'/reg',component:()=>import('../views/home/RegView')},
+      {path:'/login',component:()=>import('../views/home/LoginView')},
+      {path:'/detail',component:()=>import('../views/home/ListView')},
+      {path:'/list',component:()=>import('../views/home/ListView')},
+      {path:'/personal',
+        redirect:'personal/info',
+        component:()=>import('../views/home/PersonalView'),
+        children:[
+          {path:'info',component:()=>import('../views/home/personal/InfoView')},
+          {path:'info',component:()=>import('../views/home/personal/ManagementView')},
+          {path:'info',component:()=>import('../views/home/personal/PostView')},
+
+        ]
+      }
+    ]
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path:'/admin',
+    redirect:'/admin/user',
+    component:()=>import('../views/AdminView'),
+    children:[
+      {path:'user',component:()=>import('../views/admin/UserView')},
+      {path:'user',component:()=>import('../views/admin/BannerView')},
+      {path:'user',component:()=>import('../views/admin/ContentView')},
+    ]
   }
 ]
 
