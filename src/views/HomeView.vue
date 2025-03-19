@@ -10,10 +10,10 @@
             </router-link>
           </el-col >
           <el-col :span="10">
-            <el-menu mode="horizontal" active-text-color="orange" style="height: 70px;">
+            <el-menu mode="horizontal" active-text-color="orange" style="height: 70px;" @select="handleSelect">
               <el-menu-item index="1">食谱</el-menu-item>
               <el-menu-item index="2">视频</el-menu-item>
-              <el-menu-item index="3">咨询</el-menu-item>
+              <el-menu-item index="3">资讯</el-menu-item>
             </el-menu>
           </el-col>
           <el-col :span="6">
@@ -61,7 +61,7 @@
                     <p>社区交流</p>
                   </el-col>
                   <el-col :span="8">
-                    <h3>服务于支持</h3>
+                    <h3>服务与支持</h3>
                     <p>联系我们</p>
                     <p>广告投放</p>
                     <p>用户协议</p>
@@ -92,6 +92,10 @@
 <script setup>
 import {Search} from '@element-plus/icons-vue';
 import router from '@/router';
+
+const handleSelect = (key,keyPath)=>{
+  router.push('/list');
+}
 </script>
 
 <style>
