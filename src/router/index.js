@@ -20,8 +20,8 @@ const routes = [
         component:()=>import('../views/home/PersonalView'),
         children:[
           {path:'info',component:()=>import('../views/home/personal/InfoView')},
-          {path:'info',component:()=>import('../views/home/personal/ManagementView')},
-          {path:'info',component:()=>import('../views/home/personal/PostView')},
+          {path:'management',component:()=>import('../views/home/personal/ManagementView')},
+          {path:'post',component:()=>import('../views/home/personal/PostView')},
 
         ]
       }
@@ -33,8 +33,8 @@ const routes = [
     component:()=>import('../views/AdminView'),
     children:[
       {path:'user',component:()=>import('../views/admin/UserView')},
-      {path:'user',component:()=>import('../views/admin/BannerView')},
-      {path:'user',component:()=>import('../views/admin/ContentView')},
+      {path:'banner',component:()=>import('../views/admin/BannerView')},
+      {path:'content',component:()=>import('../views/admin/ContentView')},
     ]
   }
 ]

@@ -16,19 +16,15 @@
           <el-menu router active-text-color="orange" default-active="/admin/user" style="height:100%;">
             <img src="/imgs/icon.png" style="width: 150px;margin:20px;">
             <el-menu-item index="/admin/user">
-              <el-icon><User></User></el-icon>User Admin
-            </el-menu-item>
+              <el-icon><User></User></el-icon>User Admin</el-menu-item>
             <el-menu-item index="/admin/banner">
-              <el-icon><Picture></Picture></el-icon>Carousel Admin
-            </el-menu-item>
+              <el-icon><Picture></Picture></el-icon>Carousel Admin</el-menu-item>
             <el-menu-item index="/admin/content">
-              <el-icon><ChatDotSquare></ChatDotSquare></el-icon>Content Admin
-            </el-menu-item>
+              <el-icon><ChatDotSquare></ChatDotSquare></el-icon>Content Admin</el-menu-item>
           </el-menu>
-          Aside
         </el-aside>
-        <el-main>Main
-          <router-view></router-view>
+        <el-main>
+          <router-view/>
         </el-main>
       </el-container>
     </el-container>
