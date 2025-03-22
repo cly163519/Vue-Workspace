@@ -12,24 +12,24 @@
       <el-col :span="12">
         <el-form label-width="80px" style="margin-top:100px;">
           <el-form-item>
-            <h1 style="width: 515px;font-size:40px;position: relative;">立即注册
+            <h1 style="width: 515px;font-size:40px;position: relative;">Register
               <router-link to="/login" style="font-size:20px;color:#0aa1ed;text-decoration:none;
               position: absolute;right:0;">
-                已有账号？立即登录
+                Login
               </router-link>
             </h1>
           </el-form-item>
-          <el-form-item label="用户名">
-            <el-input placeholder="请输入用户名"></el-input>
+          <el-form-item label="Username">
+            <el-input placeholder="Enter username"></el-input>
           </el-form-item>
-          <el-form-item label="密码">
-            <el-input placeholder="请输入密码" type="password"></el-input>
+          <el-form-item label="Password">
+            <el-input placeholder="Enter Password" type="password"></el-input>
           </el-form-item>
-          <el-form-item label="昵称">
-            <el-input placeholder="请输入昵称"></el-input>
+          <el-form-item label="Nickname">
+            <el-input placeholder="Enter Nickname"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" style="width:100%;">注册</el-button>
+            <el-button type="primary" style="width:100%;">Register</el-button>
           </el-form-item>
         </el-form>
       </el-col>

@@ -1,14 +1,44 @@
-<script setup>
-
-</script>
-
+<!--A common header and a left sidebar, with a variable (dynamic) area on the right.-->
 <template>
-
+  <div class="common-layout">
+    <el-container>
+      <!--1.Edit shared header -->
+      <el-header style="background-color:#368;line-height:60px;">
+        <h1 style="color:#fff;font-size:30px;margin:0;">
+          Baking Web Admin System
+          <el-button style="float:right;margin:14px 0 0 5px;">Logout</el-button>
+          <span style="font-size:20px;float:right;">Welcome back!</span>
+        </h1>
+      </el-header>
+      <el-container>
+        <!--2.Edit left side bar-->
+        <el-aside width="200px">
+          <el-menu router active-text-color="orange" default-active="/admin/user" style="height:100%;">
+            <img src="/imgs/icon.png" style="width: 150px;margin:20px;">
+            <el-menu-item index="/admin/user">
+              <el-icon><User></User></el-icon>User Admin
+            </el-menu-item>
+            <el-menu-item index="/admin/banner">
+              <el-icon><Picture></Picture></el-icon>Carousel Admin
+            </el-menu-item>
+            <el-menu-item index="/admin/content">
+              <el-icon><ChatDotSquare></ChatDotSquare></el-icon>Content Admin
+            </el-menu-item>
+          </el-menu>
+          Aside
+        </el-aside>
+        <el-main>Main
+          <router-view></router-view>
+        </el-main>
+      </el-container>
+    </el-container>
+  </div>
 </template>
 
 <style scoped>
 
 </style>
-<script>
+
+<script setup>
 
 </script>
