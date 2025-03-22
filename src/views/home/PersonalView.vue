@@ -6,7 +6,7 @@
       <el-card style="height:100%;">
         <el-menu router active-text-color="orange" default-active="/personal/info">
           <el-menu-item index="/personal/info">Personal info</el-menu-item>
-          <el-menu-item index="/personal/management">Manuscript Management</el-menu-item>
+          <el-menu-item index="/personal/management">Post Management</el-menu-item>
         </el-menu>
       </el-card>
     </el-col>

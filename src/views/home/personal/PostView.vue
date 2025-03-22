@@ -1,11 +1,8 @@
-<script setup>
-
-</script>
-
+<!--Post Page-->
 <template>
 
 </template>
 
-<style scoped>
+<script setup>
 
-</style>
+</script>
