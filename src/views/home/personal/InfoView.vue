@@ -12,7 +12,7 @@
         <el-icon><Plus/></el-icon>
       </el-upload>
       <el-dialog v-model="dialogVisible">
-        <img w-full :src="dialogImageUrl" alt="Preview Image">
+        <img w-full :src="dialogImageUrl" alt="Preview Image"/>
       </el-dialog>
     <!--End of avatar upload-->
     </el-form-item>

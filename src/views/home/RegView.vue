@@ -2,13 +2,13 @@
 <template>
   <div style="width: 1200px;margin: 0 auto;">
     <el-row :gutter="10">
-      <!-- 左侧一张卡片 -->
+      <!-- A card on leftside -->
       <el-col :span="12">
         <el-card>
           <img src="/imgs/reg.png" style="width:100%;">
         </el-card>
       </el-col>
-      <!-- 右侧是一个表单 -->
+      <!-- Rightside is a sheet-->
       <el-col :span="12">
         <el-form label-width="80px" style="margin-top:100px;">
           <el-form-item>
