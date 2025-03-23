@@ -20,7 +20,7 @@
             </h1>
           </el-form-item>
           <el-form-item label="Username">
-            <el-input placeholder="Enter username"></el-input>
+            <el-input placeholder="Enter username" v-model="user.username"></el-input>
           </el-form-item>
           <el-form-item label="Password">
             <el-input placeholder="Enter Password" type="password"></el-input>
