@@ -23,22 +23,38 @@
             <el-input placeholder="Enter username" v-model="user.username"></el-input>
           </el-form-item>
           <el-form-item label="Password">
-            <el-input placeholder="Enter Password" type="password"></el-input>
+            <el-input placeholder="Enter Password" type="password" v-model="user.password"></el-input>
           </el-form-item>
           <el-form-item label="Nickname">
-            <el-input placeholder="Enter Nickname"></el-input>
+            <el-input placeholder="Enter Nickname" v-model="user.nickname"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" style="width:100%;">Register</el-button>
+            <el-button type="primary" style="width:100%;" @click="reg()">Register</el-button>
           </el-form-item>
         </el-form>
       </el-col>
     </el-row>
   </div>
-
 </template>
 
-
 <script setup>
+import {ref} from "vue";
+import qs from "qs";
+import axios from "axios";
+import {ElMessage} from "element-plus";
+import router from "@/router";
+
+const user = ref({username:'',password:'',nickname:''});
+const reg = ()=>{
+  let data = qs.stringify(user.value);
+  axios.post('http://localhost:8080/v1/users/reg',data).then((response)=>{
+    if(response.data.code==2001){
+      ElMessage.success("Register success!");
+      router.push('/login');
+    }else{
+      ElMessage.error(response.data.msg);
+    }
+  })
+}
 
 </script>
