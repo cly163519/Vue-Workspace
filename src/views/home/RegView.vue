@@ -13,8 +13,7 @@
         <el-form label-width="80px" style="margin-top:100px;">
           <el-form-item>
             <h1 style="width: 515px;font-size:40px;position: relative;">Register
-              <router-link to="/login" style="font-size:20px;color:#0aa1ed;text-decoration:none;
-              position: absolute;right:0;">
+              <router-link to="/login" style="font-size:20px;color:#0aa1ed;position: absolute;right:0;text-decoration:none;">
                 Login
               </router-link>
             </h1>
