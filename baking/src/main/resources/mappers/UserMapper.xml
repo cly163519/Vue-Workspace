@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tedu.baking.mapper.UserMapper">
+    <select id="selectByUsername" resultType="cn.tedu.baking.pojo.vo.UserVO">
+        SELECT id,username,password,nickname,img_url,is_admin
+        FROM user
+        WHERE username = #{username}
+    </select>
+    <insert id="insert">
+        INSERT INTO user
+        (username,password,nickname,create_time,is_admin,img_url)
+        VALUES (#{username},#{password},#{nickname},#{createTime},#{isAdmin},NULL)
+    </insert>
+</mapper>
