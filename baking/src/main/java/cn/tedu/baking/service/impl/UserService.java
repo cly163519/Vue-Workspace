@@ -2,6 +2,7 @@ package cn.tedu.baking.service.impl;
 
 import cn.tedu.baking.exception.ServiceException;
 import cn.tedu.baking.mapper.UserMapper;
+import cn.tedu.baking.pojo.dto.UserLoginDTO;
 import cn.tedu.baking.pojo.dto.UserRegDTO;
 import cn.tedu.baking.pojo.entity.User;
 import cn.tedu.baking.pojo.vo.UserVO;
@@ -29,4 +30,17 @@ public class UserService implements IUserService {
         user.setIsAdmin(0);
         userMapper.insert(user);
     }
+
+    @Override
+    public UserVO login(UserLoginDTO userLoginDTO){
+        UserVO userVO = userMapper.selectByUsername(userLoginDTO.getUsername());
+        if(userVO==null){
+            throw new ServiceException(StatusCode.USERNAME_ERROR);
+        }
+        if(!userVO.getPassword().equals(userLoginDTO.getPassword())){
+            throw new ServiceException(StatusCode.PASSWORD_ERROR);
+        }
+        return userVO;
+    }
+
 }
