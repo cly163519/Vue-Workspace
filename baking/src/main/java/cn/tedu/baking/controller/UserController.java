@@ -7,6 +7,7 @@ import cn.tedu.baking.response.JsonResult;
 import cn.tedu.baking.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +25,7 @@ public class UserController {
 
     //Login function
     @PostMapping("login")
-    public JsonResult login(UserLoginDTO userLoginDTO){
+    public JsonResult login( UserLoginDTO userLoginDTO){
         UserVO userVO = userService.login(userLoginDTO);
         System.out.println("userLoginDTO = " + userLoginDTO);
         return JsonResult.ok(userVO);
