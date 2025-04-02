@@ -32,8 +32,8 @@ const login = ()=>{
     if(response.data.code==2001){
       ElMessage.success("Login success!");
       let user = response.data.data;
-      localStorage.user = JSON.stringify(user);
       //router.push('/');
+      localStorage.user = JSON.stringify(user);
       location.href='/';
     }else{
       ElMessage.error(response.data.msg);

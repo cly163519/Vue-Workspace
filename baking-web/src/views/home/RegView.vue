@@ -55,5 +55,5 @@ const reg = ()=>{
     }
   })
 }
-
+// let name = {name: tom, age: 30};
 </script>
