@@ -24,15 +24,20 @@
             </el-input>
           </el-col>
           <el-col :span="2">
-            <el-popover title="Welcome baking web">
+            <el-popover title="Welcome baking web" v-if="user==null" popper-style="text-align:center;">
               <template #reference>
-                <router-link to="/personal">
-                  <el-icon siza="35" style="margin-top: 30px;" color="#666"><User></User></el-icon>
-                </router-link>
+                  <el-icon size="35" style="margin-top: 30px;" color="#666"><User></User></el-icon>
               </template>
               <div style="text-aligh: center;">
                 <el-button type="info" size="small" @click="router.push('/reg')">Register</el-button>
                 <el-button type="warning" size="small" @click="router.push('/login')">Login</el-button>
+              </div>
+            </el-popover>
+            <el-popover v-else :title="'welcome'+user.nickname+'back'" :width="200" popper-style="text-align:center;">
+              <template #reference><el-icon size="25" style="margin-top: 30px;" color="#666"><User/></el-icon></template>
+              <div style="text-align: center;">
+                <el-button type="success" size="small" @click="router.push('/personal')">Personal Center</el-button>
+                <el-button type="danger" size="small" @click="logout()">Logout</el-button>
               </div>
             </el-popover>
           </el-col>
@@ -92,6 +97,16 @@
 <script setup>
 import {Search} from '@element-plus/icons-vue';
 import router from '@/router';
+import {ref} from "vue";
+
+const user = ref(localStorage.user?JSON.parse(localStorage.user):null);
+const logout=()=>{
+  if(confirm("Are you sure to logout?")){
+    localStorage.clear();
+    user.value=null;
+    router.push('/');
+  }
+}
 
 const handleSelect = (key,keyPath)=>{
   router.push('/list');

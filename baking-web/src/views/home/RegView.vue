@@ -48,7 +48,7 @@ const reg = ()=>{
   let data = qs.stringify(user.value);
   axios.post('http://localhost:8080/v1/users/reg',data).then((response)=>{
     if(response.data.code==2001){
-      ElMessage.success("Register success!");
+      ElMessage.success("Registration Successful!");
       router.push('/login');
     }else{
       ElMessage.error(response.data.msg);
