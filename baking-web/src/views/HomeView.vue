@@ -28,7 +28,8 @@
               <template #reference>
                   <el-icon size="35" style="margin-top: 30px;" color="#666"><User></User></el-icon>
               </template>
-              <div style="text-aligh: center;">
+              <el-avatar :src="'http://localhost:8080'+user.imgUrl"></el-avatar>
+              <div style="text-align: center;">
                 <el-button type="info" size="small" @click="router.push('/reg')">Register</el-button>
                 <el-button type="warning" size="small" @click="router.push('/login')">Login</el-button>
               </div>
