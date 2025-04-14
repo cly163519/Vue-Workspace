@@ -42,9 +42,11 @@ import {ElMessage} from "element-plus";
 const user = ref(localStorage.user?JSON.parse(localStorage.user):null);
 const save = ()=>{
   let newUser = {id:user.value.id,nickname:user.value.nickname};
-
-
-
+  if(fileList.value.length>0){
+    let url = fileList.value[0].response.data;
+    newUser.imgUrl = url;
+    user.value.imgUrl = url;
+  }
   let data = qs.stringify(newUser);
   axios.post('http://localhost:8080/v1/users/update',data).then((response)=>{
     if(response.data.code == 2001){
