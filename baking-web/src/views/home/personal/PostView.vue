@@ -3,10 +3,10 @@
   <h1 style="color:orange;">Post page</h1>
   <el-form label-width="100px">
     <el-form-item label="article title">
-      <el-input placeholder="Please enter the article title"></el-input>
+      <el-input placeholder="Please enter the article title" v-model="content.title"></el-input>
     </el-form-item>
     <el-form-item label="article type">
-      <el-radio-group>
+      <el-radio-group v-model="content.type">
         <el-radio-button label="1">Baking Recipe</el-radio-button>
         <el-radio-button label="2">Baking Video</el-radio-button>
         <el-radio-button label="3">Information</el-radio-button>
@@ -39,6 +39,25 @@
 <script setup>
 import {ref} from 'vue';
 import {Plus} from '@element-plus/icons-vue';
+import Editor from 'wangeditor';
+import axios from "axios";
+
+const catTypeArr = ref([]);
+onMounted(()=>{
+  axios.get('http://localhost:8080/v1/categories/type').then((response)=>{
+    if(response.data.code == 2001){
+      catTypeArr.value = response.data.data;
+    }
+  })
+})
+const content = ref({title:'',type:'1'})
+const editorDive = ref(null);
+let editor = null;
+onMounted(()=>{
+  editor = new Editor(editorDiv.value);
+  editor.config.placeholder = "Please enter the content";
+  editor.create();
+})
 
 const fileList = ref([])
 
