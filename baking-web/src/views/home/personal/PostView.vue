@@ -14,8 +14,9 @@
     </el-form-item>
     <el-form-item label="Sub class">
       <el-select>
-        <el-option label="Bread" value="1"></el-option>
-        <el-option label="Snacks" value="2"></el-option>
+<!--        <el-option label="Bread" value="1"></el-option>-->
+<!--        <el-option label="Snacks" value="2"></el-option>-->
+        <el-option v-for = "c in catgoryArr" :label="c.name" :value="c.id"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="Cover">
@@ -43,21 +44,32 @@ import Editor from 'wangeditor';
 import axios from "axios";
 
 const catTypeArr = ref([]);
+const catgoryArr = ref([]);
+
+const content = ref({title:'',type:'1'})
+
 onMounted(()=>{
+  axios.get('http://localhost:8080/v1/categories/1/sub').then((response)=>{
+    if(response.data.code == 2001){
+      catgoryArr.value = response.data.data;
+    }
+  })
   axios.get('http://localhost:8080/v1/categories/type').then((response)=>{
     if(response.data.code == 2001){
       catTypeArr.value = response.data.data;
     }
   })
 })
-const content = ref({title:'',type:'1'})
+
 const editorDive = ref(null);
 let editor = null;
+
 onMounted(()=>{
   editor = new Editor(editorDiv.value);
   editor.config.placeholder = "Please enter the content";
   editor.create();
 })
+
 
 const fileList = ref([])
 
