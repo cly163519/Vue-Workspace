@@ -53,6 +53,7 @@ import Editor from 'wangeditor';
 import axios from "axios";
 import {ElMessage} from "element-plus";
 import qs from "qs";
+import router from "@/router";
 
 const catTypeArr = ref([]);
 const catgoryArr = ref([]);
@@ -81,7 +82,7 @@ onMounted(()=>{
   })
 })
 
-const editorDive = ref(null);
+const editorDiv = ref(null);
 let editor = null;
 
 onMounted(()=>{
@@ -91,6 +92,13 @@ onMounted(()=>{
 })
 
 const post = ()=>{
+  let user = localStorage.user?JSON.parse(localStorage.user):null;
+  if(user == null){
+    ElMessage.error('Please login')
+    router.push('/login')
+    return;
+  }
+  content.value.userId = user.id;
   if(content.value.title.trim()==''){ElMessage.error('Please enter the topic');return;}
   if(content.value.categoryId==''){ElMessage.error('Please choose the subclass');return;}
   if(fileList.value.length==0){ElMessage.error('Please choose the cover');return;}
