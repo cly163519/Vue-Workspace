@@ -112,28 +112,46 @@ onMounted(()=>{
 
 const videoList = ref([]);
 
-const post = ()=>{
-  let user = localStorage.user?JSON.parse(localStorage.user):null;
-  if(user == null){
+const post = ()=> {
+  let user = localStorage.user ? JSON.parse(localStorage.user) : null;
+  if (user == null) {
     ElMessage.error('Please login')
     router.push('/login')
     return;
   }
   content.value.userId = user.id;
-  if(content.value.title.trim()==''){ElMessage.error('Please enter the topic');return;}
-  if(content.value.categoryId==''){ElMessage.error('Please choose the subclass');return;}
-  if(fileList.value.length==0){ElMessage.error('Please choose the cover');return;}
+  if (content.value.title.trim() == '') {
+    ElMessage.error('Please enter the topic');
+    return;
+  }
+  if (content.value.categoryId == '') {
+    ElMessage.error('Please choose the subclass');
+    return;
+  }
+  if (fileList.value.length == 0) {
+    ElMessage.error('Please choose the cover');
+    return;
+  }
   let imgUrl = fileList.value[0].response.data;
   content.value.imgUrl = imgUrl;
-  console.log('html='+editor.txt.html());
-  console.log('text='+editor.txt.text());
+  if(content.value.type==2){
+    if(videoList.value.length==0){
+      ElMessage.error('Please select the video file');
+      return;
+    }
+    let videoUrl = videoList.value[0].respons.data;
+    content.value.videoUrl = videoUrl;
+    }else{
+  console.log('html=' + editor.txt.html());
+  console.log('text=' + editor.txt.text());
   content.value.content = editor.txt.html();
-  content.value.brief = editor.txt.text().slice(0,30);
-
+  content.value.brief = editor.txt.text().slice(0, 30);
+}
   let data = qs.stringify(content.value)
   axios.post('http://localhost:8080/v1/contents/add-new',data).then((response)=>{
     if(response.data.code==2001){
       ElMessage.success("Published successfully")
+      router.push('/personal/management');
     }
   })
 }
