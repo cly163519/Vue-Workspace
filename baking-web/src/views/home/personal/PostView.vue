@@ -37,7 +37,26 @@
         <img w-full :src="dialogImageUrl" alt="Preview Image"/>
       </el-dialog>
     </el-form-item>
-    <el-form-item label="Article content">
+    <!--Upload video-->
+    <el-form-item label="video" v-show="content.type==2">
+      <el-upload
+          v-model:file-list="videoList"
+          action="http://localhost:8080/v1/upload"
+          name="file"
+          limit="1"
+          list-type="picture-card"
+          accept="video/*"
+          :on-preview="handlePictureCardPreview"
+          :on-remove="handleRemove">
+        <el-button type="warning">Click to upload</el-button>
+        <div>(Only mp4 files no larger than 100 MB can be uploaded)</div>
+      </el-upload>
+      <el-dialog v-model="dialogVisible">
+        <img v-full :src="dialogImageUrl" alt="Preview Image"/>
+      </el-dialog>
+    </el-form-item>
+
+    <el-form-item label="Article content" v-show="content.type!=2">
       <div ref="editorDiv"></div>
     </el-form-item>
     <el-form-item>
@@ -90,6 +109,8 @@ onMounted(()=>{
   editor.config.placeholder = "Please enter the content";
   editor.create();
 })
+
+const videoList = ref([]);
 
 const post = ()=>{
   let user = localStorage.user?JSON.parse(localStorage.user):null;
