@@ -44,5 +44,19 @@ const arr = ref([]);
 const type = ref('1');
 const catTypeArr = ref([]);
 
+onMounted(()=>{
+  axios.get('http://localhost:8080/v1/categories/type').then((response)=>{
+    if(response.data.code==2001){
+      catTypeArr.value = response.data.data;
+    }
+  })
+  let user = localStorage.user?JSON.parse(localStorage.user):null;
+  let data = qs.stringify({userId:user.id,type:type.value});
+  axios.get('http://localhost:8080/v1/contents/management?'+data).then((response)=>{
+    if(respons.data.code==2001){
+      arr.value = response.data.data;
+    }
+  })
 
+})
 </script>
