@@ -13,7 +13,7 @@
       </el-radio-group>
     </el-form-item>
     <el-form-item label="Sub class">
-      <el-select v-model="conten.categoryId" placeholder="Please select">
+      <el-select v-model="content.categoryId" placeholder="Please select">
 <!--        <el-option label="Bread" value="1"></el-option>-->
 <!--        <el-option label="Snacks" value="2"></el-option>-->
         <el-option v-for = "c in catgoryArr" :label="c.name" :value="c.id"></el-option>
@@ -55,7 +55,7 @@
         <img v-full :src="dialogImageUrl" alt="Preview Image"/>
       </el-dialog>
     </el-form-item>
-
+    <!--Upload video end-->
     <el-form-item label="Article content" v-show="content.type!=2">
       <div ref="editorDiv"></div>
     </el-form-item>

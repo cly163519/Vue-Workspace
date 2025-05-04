@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test": "jest",
     "serve": "vue-cli-service serve --port 9090",
     "build": "vue-cli-service build"
   },
@@ -21,7 +22,8 @@
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-vuex": "~5.0.0",
-    "@vue/cli-service": "~5.0.0"
+    "@vue/cli-service": "~5.0.0",
+    "jest": "^29.7.0"
   },
   "browserslist": [
     "> 1%",
