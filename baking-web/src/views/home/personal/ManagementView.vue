@@ -29,9 +29,11 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {ref, onMounted } from "vue";
 import {ElMessage} from "element-plus";
 import router from '@/router';
+import axios from 'axios';
+import qs from 'qs';
 
 const del = (i)=>{
   if(confirm("Delete it?")){
@@ -53,7 +55,7 @@ onMounted(()=>{
   let user = localStorage.user?JSON.parse(localStorage.user):null;
   let data = qs.stringify({userId:user.id,type:type.value});
   axios.get('http://localhost:8080/v1/contents/management?'+data).then((response)=>{
-    if(respons.data.code==2001){
+    if(response.data.code==2001){
       arr.value = response.data.data;
     }
   })
