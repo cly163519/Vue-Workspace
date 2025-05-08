@@ -1,6 +1,6 @@
 <!--Manuscript management Page-->
 <template>
-<el-radio-group v-model="type">
+<el-radio-group v-model="type" @change="loadContents()">
   <el-radio-button v-for="c in catTypeArr" :label="c.type">{{c.name}}</el-radio-button>
 <!--  <el-radio-button label="1">Baking Recipe</el-radio-button>-->
 <!--  <el-radio-button label="2">Baking Video</el-radio-button>-->
@@ -46,12 +46,16 @@ const arr = ref([]);
 const type = ref('1');
 const catTypeArr = ref([]);
 
-onMounted(()=>{
-  axios.get('http://localhost:8080/v1/categories/type').then((response)=>{
-    if(response.data.code==2001){
+onMounted(()=> {
+  axios.get('http://localhost:8080/v1/categories/type').then((response) => {
+    if (response.data.code == 2001) {
       catTypeArr.value = response.data.data;
     }
   })
+  loadContents()
+})
+const loadContents = ()=>{
+
   let user = localStorage.user?JSON.parse(localStorage.user):null;
   let data = qs.stringify({userId:user.id,type:type.value});
   axios.get('http://localhost:8080/v1/contents/management?'+data).then((response)=>{
@@ -60,5 +64,5 @@ onMounted(()=>{
     }
   })
 
-})
+}
 </script>
