@@ -21,7 +21,7 @@
       <template #default="scope">
         <el-button-group>
           <el-button type="success" size="small">Edit</el-button>
-          <el-button type="danger" @click="del(scope.$index)" size="small">Delete</el-button>
+          <el-button type="danger" @click="del(scope.$index, scope.row)" size="small">Delete</el-button>
         </el-button-group>
       </template>
     </el-table-column>
@@ -35,10 +35,15 @@ import router from '@/router';
 import axios from 'axios';
 import qs from 'qs';
 
-const del = (i)=>{
+const del = (i, c)=>{
   if(confirm("Delete it?")){
-    arr.value.splice(i,1);
-    ElMessage.success("Deleted!");
+    axios.post('http://localhost:8080/v1/contents/'+c.id+'/delete').then((response)=>{
+      if(response.data.code==2001){
+        arr.value.splice(i,1);
+        ElMessage.success("Deleted!");
+      }
+    })
+
   }
 }
 
