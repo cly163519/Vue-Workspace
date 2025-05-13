@@ -62,7 +62,9 @@
       </el-dialog>
     </el-form-item>
     <!--Upload video end-->
+    <!--v-show="content.type!=2" It only shows if it's not a video, it's a video that doesn't require an article to be uploaded -->
     <el-form-item label="Article content" v-show="content.type!=2">
+    <!-- 4. In this div using a third-party rich text editor, ref=“editorDiv” lets the editorDiv variable point to this current div, that is, associating this div with the downloaded responsive variable editorDiv-->
       <div ref="editorDiv"></div>
     </el-form-item>
     <el-form-item>
@@ -74,6 +76,8 @@
 <script setup>
 import {onMounted, ref} from 'vue';
 import {Plus} from '@element-plus/icons-vue';
+//1.Install the rich text editor, command: npm install wangeditor
+//2.import rich text editor
 import Editor from 'wangeditor';
 import axios from "axios";
 import {ElMessage} from "element-plus";
@@ -82,11 +86,14 @@ import router from "@/router";
 
 const catTypeArr = ref([]);
 const catgoryArr = ref([]);
-
+//Define variables to hold the title and type of the article, type 1 defaults to the baking recipe type
+//Append a categoryId:'' attribute to the content object, default value is null
 const content = ref({title:'',type:'1',categoryId:''})
-
+//When the selected article type is changed, send a request to get the secondary category data corresponding to this type.
 const typeChange = ()=>{
+  //
   content.value.categoryId='';
+  //
   axios.get('http://localhost:8080/v1/categories/'+content.value.type+'/sub').then((response)=>{
     if(response.data.code==2001){
       catgoryArr.value = response.data.data;
@@ -95,6 +102,19 @@ const typeChange = ()=>{
 }
 
 onMounted(()=>{
+  //The location contains information about the current URL
+  //When a request parameter is passed in the url as get, the search attribute of the location can be used to advance the value of the parameter to ? and the following parameters
+  if(location.search.includes('id')){
+    let id = new URLResearchParams(location.search).get('id');//get()Get the first value of the specified search parameter
+    axios.get('http://localhost:8080/v1/contents'+id+'/update').then((response)=>{
+      if(response.data.code==2001){
+        console.log(response.data.data)
+        //Load the queried details of the specified id into the content to be displayed
+        content.value = response.data.data;
+      }
+    })
+  }
+  //Send a request for secondary categorized data
   axios.get('http://localhost:8080/v1/categories/1/sub').then((response)=>{
     if(response.data.code == 2001){
       catgoryArr.value = response.data.data;
@@ -106,26 +126,35 @@ onMounted(()=>{
     }
   })
 })
-
+//3. line151
 const editorDiv = ref(null);
+//5.
 let editor = null;
-
-onMounted(()=>{
+//6.
+//
+onMounted(()=>{//
+  //
+  //7.
   editor = new Editor(editorDiv.value);
+  //8.
   editor.config.placeholder = "Please enter the content";
+  //9.
   editor.create();
 })
-
+//
 const videoList = ref([]);
-
+//
 const post = ()=> {
+  //
   let user = localStorage.user ? JSON.parse(localStorage.user) : null;
   if (user == null) {
     ElMessage.error('Please login')
     router.push('/login')
     return;
   }
+  //
   content.value.userId = user.id;
+  //
   if (content.value.title.trim() == '') {
     ElMessage.error('Please enter the topic');
     return;
@@ -138,38 +167,46 @@ const post = ()=> {
     ElMessage.error('Please choose the cover');
     return;
   }
+  //
   let imgUrl = fileList.value[0].response.data;
   content.value.imgUrl = imgUrl;
-  if(content.value.type==2){
+  //
+  if(content.value.type==2){//
     if(videoList.value.length==0){
       ElMessage.error('Please select the video file');
       return;
     }
     let videoUrl = videoList.value[0].respons.data;
     content.value.videoUrl = videoUrl;
-    }else{
-  console.log('html=' + editor.txt.html());
-  console.log('text=' + editor.txt.text());
+    }else{//
+    //
+  console.log('html=' + editor.txt.html());//
+  console.log('text=' + editor.txt.text());//
+    //
   content.value.content = editor.txt.html();
+  //
   content.value.brief = editor.txt.text().slice(0, 30);
+  //
 }
+  //Send request
   let data = qs.stringify(content.value)
   axios.post('http://localhost:8080/v1/contents/add-new',data).then((response)=>{
     if(response.data.code==2001){
       ElMessage.success("Published successfully")
+      //
       router.push('/personal/management');
     }
   })
 }
 
 const fileList = ref([])
-
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
-
 //The image deletion method
 const handleRemove = (uploadFile, uploadFiles)=>{
+  //Get the url of the picture
   let imgUrl = uploadFile.response.data;
+  //Sent a request to delete a file
   axios.post('http://localhost:8080/v1/remove?imgUrl='+imgUrl).then((response)=>{
     if(response.data.code==2001){
       ElMessage.success('The server has deleted the file');
@@ -182,4 +219,5 @@ const handlePictureCardPreview = (uploadFile) =>{
   dialogImageUrl.value = uploadFile.url
   dialogVisible.value = true
 }
+
 </script>
