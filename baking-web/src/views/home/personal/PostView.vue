@@ -126,9 +126,9 @@ onMounted(()=>{
     }
   })
 })
-//3. line151
+//3. Create a responsive variable editorDiv, which points to a div in the page (the div is used here to hold the rich text editor component), and bind the value of the variable to the div.
 const editorDiv = ref(null);
-//5.
+//5. Create variables that are then used to save the created rich text editor object.
 let editor = null;
 //6.
 //
