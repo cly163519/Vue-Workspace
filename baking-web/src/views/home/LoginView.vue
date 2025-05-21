@@ -33,7 +33,7 @@ const login = ()=>{
       ElMessage.success("Login success!");
       let user = response.data.data;
       //router.push('/');
-      localStorage.user = JSON.stringify(user);//原来是什么格式？要turn to json format？
+      localStorage.user = JSON.stringify(user);
       location.href='/';
     }else{
       ElMessage.error(response.data.msg);

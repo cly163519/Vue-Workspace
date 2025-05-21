@@ -130,31 +130,31 @@ onMounted(()=>{
 const editorDiv = ref(null);
 //5. Create variables that are then used to save the created rich text editor object.
 let editor = null;
-//6.
-//
+//6. onMounted() is a VUE lifecycle method (a method that is automatically called when a VUE instance is created and destroyed).
+//Mounted means that the VUE instance needs to be mounted with the elements in the page when the page is built and initialized.
 onMounted(()=>{//
-  //
-  //7.
+  // The rich text editor here must be initialized after mounting; only after mounting can editorDiv be correctly linked to the div above
+  //7.Initialize the rich text editor (needs to be mounted to the div above)
   editor = new Editor(editorDiv.value);
-  //8.
+  //8.Configure the placeholder text in the rich text edito
   editor.config.placeholder = "Please enter the content";
-  //9.
+  //9.Create the rich text editor based on the configuration above
   editor.create();
 })
-//
+//Define the video list array
 const videoList = ref([]);
-//
+//Complete the post function
 const post = ()=> {
-  //
+  //Must ensure the user is logged in before posting
   let user = localStorage.user ? JSON.parse(localStorage.user) : null;
   if (user == null) {
     ElMessage.error('Please login')
     router.push('/login')
     return;
   }
-  //
+  //Save user id into content
   content.value.userId = user.id;
-  //
+  //Before posting, process the content to ensure it's not empty
   if (content.value.title.trim() == '') {
     ElMessage.error('Please enter the topic');
     return;
@@ -170,7 +170,7 @@ const post = ()=> {
   //
   let imgUrl = fileList.value[0].response.data;
   content.value.imgUrl = imgUrl;
-  //
+  //Determine if it's a video or an article
   if(content.value.type==2){//
     if(videoList.value.length==0){
       ElMessage.error('Please select the video file');
@@ -178,22 +178,22 @@ const post = ()=> {
     }
     let videoUrl = videoList.value[0].respons.data;
     content.value.videoUrl = videoUrl;
-    }else{//
-    //
-  console.log('html=' + editor.txt.html());//
-  console.log('text=' + editor.txt.text());//
-    //
+    }else{//If it's an article or information, then set article content and summary
+    //Get content from the rich text editor object. The two methods below are different:
+  console.log('html=' + editor.txt.html());//html = <p>This is <i><b>test text</b></i></p> (includes formatting)
+  console.log('text=' + editor.txt.text());//text = This is test text (plain text without formatting)
+    //Set article content
   content.value.content = editor.txt.html();
-  //
+  //Set article summary – extract the first 30 characters from the plain text
   content.value.brief = editor.txt.text().slice(0, 30);
-  //
+  //Use this for testing to see if the complete article data is captured
 }
   //Send request
   let data = qs.stringify(content.value)
   axios.post('http://localhost:8080/v1/contents/add-new',data).then((response)=>{
     if(response.data.code==2001){
       ElMessage.success("Published successfully")
-      //
+      //After publishing successfully, jump to the manuscript management page
       router.push('/personal/management');
     }
   })

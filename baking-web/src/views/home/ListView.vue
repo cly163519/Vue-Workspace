@@ -1,7 +1,7 @@
-<!--列表页面-->
+<!--List Page-->
 <template>
   <div style="width: 1200px;margin: 0 auto;">
-    <!--复制首页中有4张卡片的el-row -->
+    <!--Cope HomeView four el-row -->
     <el-row :gutter="10">
       <el-col :span="6" v-for="item in 4" style="margin-top: 10px;">
         <el-card>
