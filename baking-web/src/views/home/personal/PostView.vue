@@ -91,9 +91,9 @@ const catgoryArr = ref([]);
 const content = ref({title:'',type:'1',categoryId:''})
 //When the selected article type is changed, send a request to get the secondary category data corresponding to this type.
 const typeChange = ()=>{
-  //
+  //Prevent the original title from being carried over when switching sections.
   content.value.categoryId='';
-  //
+  //Send a request to obtain data from the second-level classification.
   axios.get('http://localhost:8080/v1/categories/'+content.value.type+'/sub').then((response)=>{
     if(response.data.code==2001){
       catgoryArr.value = response.data.data;
@@ -105,12 +105,16 @@ onMounted(()=>{
   //The location contains information about the current URL
   //When a request parameter is passed in the url as get, the search attribute of the location can be used to advance the value of the parameter to ? and the following parameters
   if(location.search.includes('id')){
-    let id = new URLResearchParams(location.search).get('id');//get()Get the first value of the specified search parameter
+    let id = new URLSearchParams(location.search).get('id');//get()Get the first value of the specified search parameter
     axios.get('http://localhost:8080/v1/contents'+id+'/update').then((response)=>{
       if(response.data.code==2001){
         console.log(response.data.data)
         //Load the queried details of the specified id into the content to be displayed
         content.value = response.data.data;
+
+        //console.log(response.data.data)
+        //Load the queried details of the specified id into the content to be displayed
+        //content.value = response.data.data;
       }
     })
   }
@@ -126,6 +130,28 @@ onMounted(()=>{
     }
   })
 })
+
+const fileList = ref([])
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
+//The image deletion method
+const handleRemove = (uploadFile, uploadFiles)=>{
+  //Get the url of the picture
+  let imgUrl = uploadFile.response.data;
+  //Sent a request to delete a file
+  axios.post('http://localhost:8080/v1/remove?imgUrl='+imgUrl).then((response)=>{
+    if(response.data.code==2001){
+      ElMessage.success('The server has deleted the file');
+    }
+  })
+  console.log(uploadFile,uploadFiles)
+}
+
+const handlePictureCardPreview = (uploadFile) =>{
+  dialogImageUrl.value = uploadFile.url
+  dialogVisible.value = true
+}
+
 //3. Create a responsive variable editorDiv, which points to a div in the page (the div is used here to hold the rich text editor component), and bind the value of the variable to the div.
 const editorDiv = ref(null);
 //5. Create variables that are then used to save the created rich text editor object.
@@ -167,21 +193,21 @@ const post = ()=> {
     ElMessage.error('Please choose the cover');
     return;
   }
-  //
+  //Put the path of the successfully uploaded image into the content object.
   let imgUrl = fileList.value[0].response.data;
   content.value.imgUrl = imgUrl;
   //Determine if it's a video or an article
-  if(content.value.type==2){//
+  if(content.value.type==2){//Video
     if(videoList.value.length==0){
       ElMessage.error('Please select the video file');
       return;
     }
-    let videoUrl = videoList.value[0].respons.data;
+    let videoUrl = videoList.value[0].response.data;
     content.value.videoUrl = videoUrl;
     }else{//If it's an article or information, then set article content and summary
     //Get content from the rich text editor object. The two methods below are different:
   console.log('html=' + editor.txt.html());//html = <p>This is <i><b>test text</b></i></p> (includes formatting)
-  console.log('text=' + editor.txt.text());//text = This is test text (plain text without formatting)
+  console.log('text=' + editor.txt.text());//text = This is tested text (plain text without formatting)
     //Set article content
   content.value.content = editor.txt.html();
   //Set article summary – extract the first 30 characters from the plain text
@@ -199,25 +225,6 @@ const post = ()=> {
   })
 }
 
-const fileList = ref([])
-const dialogImageUrl = ref('')
-const dialogVisible = ref(false)
-//The image deletion method
-const handleRemove = (uploadFile, uploadFiles)=>{
-  //Get the url of the picture
-  let imgUrl = uploadFile.response.data;
-  //Sent a request to delete a file
-  axios.post('http://localhost:8080/v1/remove?imgUrl='+imgUrl).then((response)=>{
-    if(response.data.code==2001){
-      ElMessage.success('The server has deleted the file');
-    }
-  })
-  console.log(uploadFile,uploadFiles)
-}
 
-const handlePictureCardPreview = (uploadFile) =>{
-  dialogImageUrl.value = uploadFile.url
-  dialogVisible.value = true
-}
 
 </script>
