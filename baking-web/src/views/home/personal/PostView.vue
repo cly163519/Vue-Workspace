@@ -112,18 +112,23 @@ onMounted(()=>{
         //Load the queried details of the specified id into the content to be displayed
         content.value = response.data.data;
 
+        //Send a request for secondary categorized data
+        //Second-level categories cannot be displayed normally.
+        //Reason: There are no other types of second-level categories in the current type 1.
+        //Solution: Request the second-level categories corresponding to the current content object type again.
+        //Copy the code for requesting second-level category data from the typeChange() method to this location.
+        axios.get('http://localhost:8080/v1/categories/1/sub').then((response)=>{
+          if(response.data.code == 2001){
+            catgoryArr.value = response.data.data;
+          }
+        })
         //console.log(response.data.data)
         //Load the queried details of the specified id into the content to be displayed
         //content.value = response.data.data;
       }
     })
   }
-  //Send a request for secondary categorized data
-  axios.get('http://localhost:8080/v1/categories/1/sub').then((response)=>{
-    if(response.data.code == 2001){
-      catgoryArr.value = response.data.data;
-    }
-  })
+
   axios.get('http://localhost:8080/v1/categories/type').then((response)=>{
     if(response.data.code == 2001){
       catTypeArr.value = response.data.data;
