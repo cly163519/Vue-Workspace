@@ -1,12 +1,13 @@
 <!--Post Page-->
 <template>
-  <h1 style="color:orange;">Post page</h1>
+  <h1 style="color:orange;">{{ content.id == null?'Post Content Page':'Change Content Page' }}</h1>
   <el-form label-width="100px">
     <el-form-item label="article title">
       <el-input placeholder="Please enter the article title" v-model="content.title"></el-input>
     </el-form-item>
     <el-form-item label="article type">
       <!--@change="" Triggered when options change-->
+      <!-- :disabled = "content.id!=null" id is not empty, which means that changing the article type is disabled during modification.  -->
       <el-radio-group @change="typeChange()" v-model="content.type">
 <!--        <el-radio-button label="1">Baking Recipe</el-radio-button>-->
 <!--        <el-radio-button label="2">Baking Video</el-radio-button>-->
@@ -25,6 +26,13 @@
     </el-form-item>
     <!-- Start of cover upload -->
     <el-form-item label="Cover">
+      <!-- Note: The id value is only available when modifying. You need to display the cover image using v-if=“content.id!=null”.
+            Newly published articles do not have values (id, cover image, etc.).
+            &&fileList.length==0 Ensure that there is only one cover image.  -->
+      <img v-if="content.id!=null&&fileList.length==0"
+           :src="'http://localhost:8080'+content.imgUrl"
+           style="width:145px;height:145px;margiin-right:10px;"
+      >
       <!-- This part is the same as in InfoView and can be reused directly -->
       <el-upload
           v-model:file-list="fileList"
@@ -45,6 +53,11 @@
 
     <!--Cope the whole process of upload video-->
     <el-form-item label="video" v-show="content.type==2">
+    <!--Displayed only when modified
+     videoList.length==0 -The original one is not displayed, only the newly modified one is displayed. Only one can be displayed at a time.-->
+      <video v-if="content.id!=null&&videoList.length==0"
+             :src="'http://localhost:8080'+content.videoUrl"
+              style="width:300px;margin-right:10px;" type="video/mp4" controls></video>
       <el-upload
           v-model:file-list="videoList"
           action="http://localhost:8080/v1/upload"
@@ -68,7 +81,7 @@
       <div ref="editorDiv"></div>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="post()">Publish content</el-button>
+      <el-button type="primary" @click="post()">{{ content.id==null?'Post Content':'Modify Content' }}</el-button>
     </el-form-item>
   </el-form>
 </template>
