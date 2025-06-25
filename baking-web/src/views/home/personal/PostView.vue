@@ -8,7 +8,7 @@
     <el-form-item label="article type">
       <!--@change="" Triggered when options change-->
       <!-- :disabled = "content.id!=null" id is not empty, which means that changing the article type is disabled during modification.  -->
-      <el-radio-group @change="typeChange()" v-model="content.type">
+      <el-radio-group :disabled="content.id!=null" @change="typeChange()" v-model="content.type">
 <!--        <el-radio-button label="1">Baking Recipe</el-radio-button>-->
 <!--        <el-radio-button label="2">Baking Video</el-radio-button>-->
 <!--        <el-radio-button label="3">Information</el-radio-button>-->
@@ -124,7 +124,8 @@ onMounted(()=>{
         console.log(response.data.data)
         //Load the queried details of the specified id into the content to be displayed
         content.value = response.data.data;
-
+        //Let the rich text editor display the article content
+        editor.txt.html(content.value.content);
         //Send a request for secondary categorized data
         //Second-level categories cannot be displayed normally.
         //Reason: There are no other types of second-level categories in the current type 1.
@@ -207,6 +208,7 @@ const post = ()=> {
     ElMessage.error('Please choose the subclass');
     return;
   }
+
   if (fileList.value.length == 0) {
     ElMessage.error('Please choose the cover');
     return;
@@ -214,15 +216,37 @@ const post = ()=> {
   //Put the path of the successfully uploaded image into the content object.
   let imgUrl = fileList.value[0].response.data;
   content.value.imgUrl = imgUrl;
-  //Determine if it's a video or an article
-  if(content.value.type==2){//Video
-    if(videoList.value.length==0){
-      ElMessage.error('Please select the video file');
-      return;
+  //Determine whether to publish or modify. Publishing requires selecting a cover, while modifying can use the old cover.
+  if(content.value.id==null){//Publish
+    //No image uploaded at the time of publication
+    if(fileList.value.length==0){ElMessage.error('Please select the cover!');return;}
+    let imgUrl = fileList.value[0].response.data;
+    content.value.imgUrl = imgUrl;
+  }else{//Modify
+    //When editing, if no image was uploaded, use the old image. If an image was uploaded, place the uploaded image in the content.
+    if(fileList.value.length>0){
+      let imgUrl = fileList.value[0].response.data;
+      content.value.imgUrl = imgUrl;
     }
-    let videoUrl = videoList.value[0].response.data;
-    content.value.videoUrl = videoUrl;
-    }else{//If it's an article or information, then set article content and summary
+  }
+  //Determine if it's a video or an article
+  if(content.value.type==2) {//Video
+    //Determine whether to publish or modify. Publishing requires selecting a video, while modifying can use an old video.
+    if (content.value.id == null) {
+      if (videoList.value.length == 0) {
+        ElMessage.error('Please select the video file');
+      }
+      let videoUrl = videoList.value[0].response.data;
+      content.value.videoUrl = videoUrl;
+    } else {
+      if (videoList.value.length > 0) {
+        let videoUrl = videoList.value[0].response.data;
+        content.value.videoUrl = videoUrl;
+      }
+    }
+
+  }else{
+    //If it's an article or information, then set article content and summary
     //Get content from the rich text editor object. The two methods below are different:
   console.log('html=' + editor.txt.html());//html = <p>This is <i><b>test text</b></i></p> (includes formatting)
   console.log('text=' + editor.txt.text());//text = This is tested text (plain text without formatting)
@@ -232,11 +256,12 @@ const post = ()=> {
   content.value.brief = editor.txt.text().slice(0, 30);
   //Use this for testing to see if the complete article data is captured
 }
+
   //Send request
   let data = qs.stringify(content.value)
   axios.post('http://localhost:8080/v1/contents/add-new',data).then((response)=>{
     if(response.data.code==2001){
-      ElMessage.success("Published successfully")
+      ElMessage.success(content.value.id==null?"Published successfully":"Modified successfully!")
       //After publishing successfully, jump to the manuscript management page
       router.push('/personal/management');
     }
