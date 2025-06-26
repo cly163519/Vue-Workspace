@@ -150,6 +150,23 @@ onMounted(()=>{
   })
 })
 
+
+//3. Create a responsive variable editorDiv, which points to a div in the page (the div is used here to hold the rich text editor component), and bind the value of the variable to the div.
+const editorDiv = ref(null);
+//5. Create variables that are then used to save the created rich text editor object.
+let editor = null;
+//6. onMounted() is a VUE lifecycle method (a method that is automatically called when a VUE instance is created and destroyed).
+//Mounted means that the VUE instance needs to be mounted with the elements in the page when the page is built and initialized.
+onMounted(()=>{//
+  // The rich text editor here must be initialized after mounting; only after mounting can editorDiv be correctly linked to the div above
+  //7.Initialize the rich text editor (needs to be mounted to the div above)
+  editor = new Editor(editorDiv.value);
+  //8.Configure the placeholder text in the rich text edito
+  editor.config.placeholder = "Please enter the content";
+  //9.Create the rich text editor based on the configuration above
+  editor.create();
+})
+
 const fileList = ref([])
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
@@ -171,21 +188,7 @@ const handlePictureCardPreview = (uploadFile) =>{
   dialogVisible.value = true
 }
 
-//3. Create a responsive variable editorDiv, which points to a div in the page (the div is used here to hold the rich text editor component), and bind the value of the variable to the div.
-const editorDiv = ref(null);
-//5. Create variables that are then used to save the created rich text editor object.
-let editor = null;
-//6. onMounted() is a VUE lifecycle method (a method that is automatically called when a VUE instance is created and destroyed).
-//Mounted means that the VUE instance needs to be mounted with the elements in the page when the page is built and initialized.
-onMounted(()=>{//
-  // The rich text editor here must be initialized after mounting; only after mounting can editorDiv be correctly linked to the div above
-  //7.Initialize the rich text editor (needs to be mounted to the div above)
-  editor = new Editor(editorDiv.value);
-  //8.Configure the placeholder text in the rich text edito
-  editor.config.placeholder = "Please enter the content";
-  //9.Create the rich text editor based on the configuration above
-  editor.create();
-})
+
 //Define the video list array
 const videoList = ref([]);
 //Complete the post function
@@ -200,34 +203,39 @@ const post = ()=> {
   //Save user id into content
   content.value.userId = user.id;
   //Before posting, process the content to ensure it's not empty
-  if (content.value.title.trim() == '') {
-    ElMessage.error('Please enter the topic');
-    return;
-  }
-  if (content.value.categoryId == '') {
-    ElMessage.error('Please choose the subclass');
-    return;
-  }
-
-  if (fileList.value.length == 0) {
-    ElMessage.error('Please choose the cover');
-    return;
-  }
-  //Put the path of the successfully uploaded image into the content object.
-  let imgUrl = fileList.value[0].response.data;
-  content.value.imgUrl = imgUrl;
-  //Determine whether to publish or modify. Publishing requires selecting a cover, while modifying can use the old cover.
-  if(content.value.id==null){//Publish
-    //No image uploaded at the time of publication
-    if(fileList.value.length==0){ElMessage.error('Please select the cover!');return;}
+  if (content.value.title.trim() == '') {ElMessage.error('Please enter the topic');return;}
+  if (content.value.categoryId == '') {ElMessage.error('Please choose the subclass');return;}
+  //Decide whether to publish or modify. Publishing requires selecting a cover, while modifying allows you to use the old cover.
+  if(content.value.id==null) {//New publish
+    if (fileList.value.length == 0) {
+      ElMessage.error('Please choose the cover');
+      return;
+    }
+    //Put the path of the successfully uploaded image into the content object.
     let imgUrl = fileList.value[0].response.data;
     content.value.imgUrl = imgUrl;
-  }else{//Modify
-    //When editing, if no image was uploaded, use the old image. If an image was uploaded, place the uploaded image in the content.
+  }else{
     if(fileList.value.length>0){
       let imgUrl = fileList.value[0].response.data;
       content.value.imgUrl = imgUrl;
     }
+  }
+
+  //Determine whether to publish or modify. Publishing requires selecting a cover, while modifying can use the old cover.
+  if(content.value.type==2){
+    if(content.value.id==null){//Publish
+      if(fileList.value.length==0){ElMessage.error('Please select the cover!');return;}
+      let imgUrl = fileList.value[0].response.data;
+      content.value.videoUrl = videoUrl;
+  }else{//Modify
+    //When editing, if no image was uploaded, use the old image. If an image was uploaded, place the uploaded image in the content.
+    if(fileList.value.length>0){
+      let videoUrl = videoList.value[0].response.data;
+      content.value.videoUrl = videoUrl;
+    }
+  }
+  }else{
+
   }
   //Determine if it's a video or an article
   if(content.value.type==2) {//Video
@@ -246,24 +254,32 @@ const post = ()=> {
     }
 
   }else{
+    //Set article content
+    content.value.content = editor.txt.html();
+    //Set article summary – extract the first 30 characters from the plain text
+    content.value.brief = editor.txt.text().slice(0, 30);
+    console.log(content.value);
+    //Use this for testing to see if the complete article data is captured
     //If it's an article or information, then set article content and summary
     //Get content from the rich text editor object. The two methods below are different:
-  console.log('html=' + editor.txt.html());//html = <p>This is <i><b>test text</b></i></p> (includes formatting)
-  console.log('text=' + editor.txt.text());//text = This is tested text (plain text without formatting)
-    //Set article content
-  content.value.content = editor.txt.html();
-  //Set article summary – extract the first 30 characters from the plain text
-  content.value.brief = editor.txt.text().slice(0, 30);
-  //Use this for testing to see if the complete article data is captured
+  //console.log('html=' + editor.txt.html());//html = <p>This is <i><b>test text</b></i></p> (includes formatting)
+  //console.log('text=' + editor.txt.text());//text = This is tested text (plain text without formatting)
+
 }
 
   //Send request
-  let data = qs.stringify(content.value)
+  let data = qs.stringify(content.value);
   axios.post('http://localhost:8080/v1/contents/add-new',data).then((response)=>{
     if(response.data.code==2001){
       ElMessage.success(content.value.id==null?"Published successfully":"Modified successfully!")
       //After publishing successfully, jump to the manuscript management page
-      router.push('/personal/management');
+      if(localStorage.from!=null&&localStorage.from=='admin'){
+        router.push('/admin/management');
+        localStorage.from=null;
+      }else{
+        router.push('/personal/management');
+      }
+
     }
   })
 }
