@@ -122,8 +122,24 @@ import router from "@/router";
 import {onMounted, ref} from "vue";
 import axios from "axios";
 
-
-
+const recipeCatArr = ref([]);
+const videoCatArr = ref([]);
+const infoCatArr = ref([]);
+//Execute immediately
+onMounted(()=>{
+  //Send a request to obtain the secondary classification of recipes.
+  axios.get('http://localhost:8080/v1/categories/1/sub').then((response)=>{
+    if(response.data.code==2001){
+      recipeCattArr.value = response.data.data;
+    }
+  })
+  //Send a request to obtain the secondary classification of videos.
+  axios.get('http://localhost:8080/v1/categories/2/sub').then((response)=>{
+    if(response.data.code==2001){
+      videoCatArr.value = response.data.data;
+    }
+  })
+})
 
 </script>
 
