@@ -16,10 +16,9 @@
       </el-col>
       <el-col :span="21">
         <!--default-active="1",first item-->
-        <el-menu mode="horizontal" active-text-color="orange" default-active="1">
-          <el-menu-item index="1">All</el-menu-item>
-          <el-menu-item index="2">Bread</el-menu-item>
-          <el-menu-item index="3">Snacks</el-menu-item>
+        <el-menu mode="horizontal" active-text-color="orange" default-active="0">
+          <el-menu-item index="0">All</el-menu-item>
+          <el-menu-item v-for="c in recipeCatArr" :index="c.id">{{c.name}}</el-menu-item>
         </el-menu>
       </el-col>
     </el-row>
@@ -52,10 +51,9 @@
         <p style="font-size:28px;margin:10px;">Baking videos</p>
       </el-col>
       <el-col :span="21">
-        <el-menu mode="horizontal" active-text-color="orange" default-active="1">
-          <el-menu-item index="1">All</el-menu-item>
-          <el-menu-item index="2">Bread</el-menu-item>
-          <el-menu-item index="3">Snacks</el-menu-item>
+        <el-menu mode="horizontal" active-text-color="orange" default-active="0">
+          <el-menu-item index="">All</el-menu-item>
+          <el-menu-item v-for="c in videoCatArr" :index="c.id">{{c.name}}</el-menu-item>
         </el-menu>
       </el-col>
     </el-row>
@@ -88,10 +86,9 @@
         <p style="font-size:28px;margin:10px;">Information</p>
       </el-col>
       <el-col :span="21">
-        <el-menu mode="horizontal" active-text-color="orange" default-active="1">
-          <el-menu-item index="1">All</el-menu-item>
-          <el-menu-item index="2">Bread</el-menu-item>
-          <el-menu-item index="3">Snacks</el-menu-item>
+        <el-menu mode="horizontal" active-text-color="orange" default-active="0">
+          <el-menu-item index="0">All</el-menu-item>
+          <el-menu-item v-for="c in infoCatArr" :index="c.id">{{c.name}}</el-menu-item>
         </el-menu>
       </el-col>
     </el-row>
