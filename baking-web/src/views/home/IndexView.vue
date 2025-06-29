@@ -23,19 +23,19 @@
       </el-col>
     </el-row>
     <el-row :gutter="10">
-      <el-col :span="6" v-for="item in 4" style="margin-top: 10px;">
+      <el-col :span="6" v-for="item in recipeArr" style="margin-top: 10px;">
         <el-card>
           <!--7 Click every card turn to detail page -->
           <router-link to="/detail" style="text-decoration: none;color:#333;">
-            <img src="/imgs/a.jpg" style="width:100%;height:150px;">
-            <p style="height: 40px;">Creamy bread</p>
+            <img :src="'http://localhost:8080'+item.imgUrl" style="width:100%;height:150px;">
+            <p style="height: 40px;text-decoration: none;">{{ item.title }}</p>
           </router-link>
           <el-row :gutter="10">
             <el-col :span="4">
-              <el-avatar src="/imgs/head.jpg"></el-avatar>
+              <el-avatar :src="'http://localhost:8080'+item.userImgUrl"></el-avatar>
             </el-col>
-            <el-col :span="16" style="font-size:20px;line-height:40px;">Michael</el-col>
-            <el-col :span="4" style="line-height:40px;">Big Bread</el-col>
+            <el-col :span="16" style="font-size:20px;line-height:40px;">{{item.nickname}}</el-col>
+            <el-col :span="4" style="line-height:40px;">{{ item.categoryName }}</el-col>
           </el-row>
         </el-card>
       </el-col>
@@ -58,19 +58,19 @@
       </el-col>
     </el-row>
     <el-row :gutter="10">
-      <el-col :span="6" v-for="item in 4" style="margin-top: 10px;">
+      <el-col :span="6" v-for="item in videoArr" style="margin-top: 10px;">
         <el-card>
         <!--  7跳转详情页-->
         <router-link to="/detail" style="text-decoration: none;color:#333;">
-          <img src="/imgs/a.jpg" style="widt:100%;height:150px;">
-          <p style="height: 40px;">Creamy bread</p>
+          <img :src="'http://localhost:8080'+item.imgUrl" style="widt:100%;height:150px;">
+          <p style="height: 40px;text-decoration:none;">{{  item.title }}</p>
         </router-link>
           <el-row :gutter="10">
             <el-col :span="4">
-              <el-avatar src="/imgs/head.jpg"></el-avatar>
+              <el-avatar :src="'http://localhost:8080'+item.userImgUrl"></el-avatar>
             </el-col>
-            <el-col :span="16" style="font-size:20px;line-height: 40px;">Michael</el-col>
-            <el-col :span="4" style="line-height:40px;">Big Bread</el-col>
+            <el-col :span="16" style="font-size:20px;line-height: 40px;">{{item.nickname}}</el-col>
+            <el-col :span="4" style="line-height:40px;">{{item.categoryName}}</el-col>
           </el-row>
         </el-card>
       </el-col>
@@ -93,18 +93,18 @@
       </el-col>
     </el-row>
     <el-row :gutter="10">
-      <el-col :span="6" v-for="item in 4" style="margin-top: 10px;">
+      <el-col :span="6" v-for="item in infoArr" style="margin-top: 10px;">
         <el-card>
           <router-link to="/detail" style="text-decoration: none;color:#333;">
-            <img src="/imgs/a.jpg" style="width:100%;height:150px;">
-            <p style="height: 40px;">Creamy bread</p>
+            <img :src="'http://localhost:8080'+item.imgUrl" style="width:100%;height:150px;">
+            <p style="height: 40px;text-decoration:none;">{{item.title}}</p>
           </router-link>
           <el-row :gutter="10">
             <el-col :span="4">
-              <el-avatar src="/imgs/head.jpg"></el-avatar>
+              <el-avatar :src="'http://localhost:8080'+item.userImgUrl"></el-avatar>
             </el-col>
-            <el-col :span="16" style="font-size:20px;line-height: 40px;">Michael</el-col>
-            <el-col :span="4" style="line-height: 40px;">Big Bread</el-col>
+            <el-col :span="16" style="font-size:20px;line-height: 40px;">{{ item.nickname }}</el-col>
+            <el-col :span="4" style="line-height: 40px;">{{item.categoryName}}</el-col>
           </el-row>
         </el-card>
       </el-col>
@@ -121,25 +121,53 @@
 import router from "@/router";
 import {onMounted, ref} from "vue";
 import axios from "axios";
-
+import qs from "qs";
+//1.Define three secondary classification arrays
 const recipeCatArr = ref([]);
 const videoCatArr = ref([]);
 const infoCatArr = ref([]);
-//Execute immediately
+//2.Execute immediately
 onMounted(()=>{
-  //Send a request to obtain the secondary classification of recipes.
+  //3.1 Send a request to obtain the secondary classification of recipes.
   axios.get('http://localhost:8080/v1/categories/1/sub').then((response)=>{
     if(response.data.code==2001){
       recipeCattArr.value = response.data.data;
     }
   })
-  //Send a request to obtain the secondary classification of videos.
+  //3.2 Send a request to obtain the secondary classification of videos.
   axios.get('http://localhost:8080/v1/categories/2/sub').then((response)=>{
     if(response.data.code==2001){
       videoCatArr.value = response.data.data;
     }
   })
+  //3.3 Send a request to obtain information on secondary categories
+  axios.get('http://localhost:8080/v1/categories/3/sub').then((response)=>{
+    if(response.data.code==2001){
+      infoCatArr.value = response.data.data;
+    }
+  })
+  //6.Request all data for the three types, with all category IDs set to 0.
+  loadContents(1,0);
+  loadContents(2,0);
+  loadContents(3,0);
 })
+//4.Define three content arrays
+const recipeArr = ref([]);
+const videoArr = ref([]);
+const infoArr = ref([]);
+//5.Define method for loading contents
+const loadContents = (type,categoryId)=>{
+  let data = qs.stringify({type,categoryId:categoryId});//Convert request parameters to query string format
+  axios.get('http://localhost:8080/v1/contents/index?'+data).then((response)=>{//Get request need ? to connect
+  if(response.data.code==2001){
+    switch(type){
+      case 1:recipeArr.value = response.data.data;break;
+      case 2:videoArr.value = response.data.data;break;
+      case 3:infoArr.value = response.data.data;break;
+      }
+    }
+  })
+}
 
 </script>
 
