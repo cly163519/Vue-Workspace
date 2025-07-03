@@ -16,7 +16,7 @@
       </el-col>
       <el-col :span="21">
         <!--default-active="1",first item-->
-        <el-menu mode="horizontal" active-text-color="orange" default-active="0">
+        <el-menu mode="horizontal" active-text-color="orange" default-active="0" @select="selectRecipe">
           <el-menu-item index="0">All</el-menu-item>
           <el-menu-item v-for="c in recipeCatArr" :index="c.id">{{c.name}}</el-menu-item>
         </el-menu>
@@ -51,7 +51,7 @@
         <p style="font-size:28px;margin:10px;">Baking videos</p>
       </el-col>
       <el-col :span="21">
-        <el-menu mode="horizontal" active-text-color="orange" default-active="0">
+        <el-menu mode="horizontal" active-text-color="orange" default-active="0" @select="selectVideo">
           <el-menu-item index="">All</el-menu-item>
           <el-menu-item v-for="c in videoCatArr" :index="c.id">{{c.name}}</el-menu-item>
         </el-menu>
@@ -60,7 +60,7 @@
     <el-row :gutter="10">
       <el-col :span="6" v-for="item in videoArr" style="margin-top: 10px;">
         <el-card>
-        <!--  7跳转详情页-->
+        <!--  7Jump to contentview-->
         <router-link to="/detail" style="text-decoration: none;color:#333;">
           <img :src="'http://localhost:8080'+item.imgUrl" style="widt:100%;height:150px;">
           <p style="height: 40px;text-decoration:none;">{{  item.title }}</p>
@@ -69,8 +69,8 @@
             <el-col :span="4">
               <el-avatar :src="'http://localhost:8080'+item.userImgUrl"></el-avatar>
             </el-col>
-            <el-col :span="16" style="font-size:20px;line-height: 40px;">{{item.nickname}}</el-col>
-            <el-col :span="4" style="line-height:40px;">{{item.categoryName}}</el-col>
+            <el-col :span="13" style="font-size:20px;line-height: 40px;">{{item.nickname}}</el-col>
+            <el-col :span="7" style="line-height:40px;">{{item.categoryName}}</el-col>
           </el-row>
         </el-card>
       </el-col>
@@ -86,7 +86,7 @@
         <p style="font-size:28px;margin:10px;">Information</p>
       </el-col>
       <el-col :span="21">
-        <el-menu mode="horizontal" active-text-color="orange" default-active="0">
+        <el-menu mode="horizontal" active-text-color="orange" default-active="0" @select="selectInfo">
           <el-menu-item index="0">All</el-menu-item>
           <el-menu-item v-for="c in infoCatArr" :index="c.id">{{c.name}}</el-menu-item>
         </el-menu>
@@ -103,8 +103,8 @@
             <el-col :span="4">
               <el-avatar :src="'http://localhost:8080'+item.userImgUrl"></el-avatar>
             </el-col>
-            <el-col :span="16" style="font-size:20px;line-height: 40px;">{{ item.nickname }}</el-col>
-            <el-col :span="4" style="line-height: 40px;">{{item.categoryName}}</el-col>
+            <el-col :span="13" style="font-size:20px;line-height: 40px;">{{ item.nickname }}</el-col>
+            <el-col :span="7" style="line-height: 40px;">{{item.categoryName}}</el-col>
           </el-row>
         </el-card>
       </el-col>
@@ -168,10 +168,26 @@ const loadContents = (type,categoryId)=>{
     }
   })
 }
+//Choose the sub category,trigger this function
+//index is the subclass id:index="c.id"
+const selectRecipe = (index)=>{
+  //The type of recipe is 1
+  loadContents(1,index)
+}
+const selectVideo = (index)=>{
+  loadContents(2,index)
+}
+const selectInfo = (index)=>{
+  loadContents(3,index)
+}
 
 </script>
 
 
 <style scoped>
-
+p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 </style>
