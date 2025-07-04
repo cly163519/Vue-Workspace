@@ -5,8 +5,8 @@
     <!--2.Add carousel pictures-->
     <el-carousel>
       <!--3.Carousel -->
-      <el-carousel-item v-for="item in 3">
-        <img :src="'/imgs/banner'+item+'.jpg'" style="width: 100%;height: 100%;">
+      <el-carousel-item v-for="item in bannerArr">
+        <img :src="'http://localhost:8080'+item.imgUrl" style="width: 100%;height: 100%;">
       </el-carousel-item>
     </el-carousel>
       <!-- Recipe -->
@@ -25,8 +25,8 @@
     <el-row :gutter="10">
       <el-col :span="6" v-for="item in recipeArr" style="margin-top: 10px;">
         <el-card>
-          <!--7 Click every card turn to detail page -->
-          <router-link to="/detail" style="text-decoration: none;color:#333;">
+          <!--7.1 Click every card turn to detail page -->
+          <router-link :to="'/detail?id='+item.id" style="text-decoration: none;color:#333;">
             <img :src="'http://localhost:8080'+item.imgUrl" style="width:100%;height:150px;">
             <p style="height: 40px;text-decoration: none;">{{ item.title }}</p>
           </router-link>
@@ -61,7 +61,7 @@
       <el-col :span="6" v-for="item in videoArr" style="margin-top: 10px;">
         <el-card>
         <!--  7Jump to contentview-->
-        <router-link to="/detail" style="text-decoration: none;color:#333;">
+        <router-link :to="'/detail?id='+item.id" style="text-decoration: none;color:#333;">
           <img :src="'http://localhost:8080'+item.imgUrl" style="widt:100%;height:150px;">
           <p style="height: 40px;text-decoration:none;">{{  item.title }}</p>
         </router-link>
@@ -95,7 +95,7 @@
     <el-row :gutter="10">
       <el-col :span="6" v-for="item in infoArr" style="margin-top: 10px;">
         <el-card>
-          <router-link to="/detail" style="text-decoration: none;color:#333;">
+          <router-link :to="'/detail?id='+item.id" style="text-decoration: none;color:#333;">
             <img :src="'http://localhost:8080'+item.imgUrl" style="width:100%;height:150px;">
             <p style="height: 40px;text-decoration:none;">{{item.title}}</p>
           </router-link>
