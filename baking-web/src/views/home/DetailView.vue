@@ -58,13 +58,13 @@
       <el-card style="margin-top:10px;">
         <h2>Articles</h2>
         <hr>
-        <el-row :gutter="10" v-for="item in 4">
+        <el-row :gutter="10" v-for="item in hotArr">
           <eo-col :span="10">
-            <img src="/imgs/a.jpg" style="width:100%;">
+            <router-link :to="'/detail?id='+item.id"><img :src="'http://localhost:8080'+item.imgUrl" style="width:100%;"></router-link>
           </eo-col>
           <el-col :span="14">
-            <p style="height:40px;margin-top:0;">This is the topic</p>
-            <p style="color:#666;font-size:12px;margin: 0;">2025/03/19</p>
+            <router-link :to="'/detail?id='+item.id"><p class="title_p">{{ item.title }}</p></router-link>
+            <p style="color:#666;font-size:12px;margin: 0;">{{ item.createTime }}</p>
           </el-col>
         </el-row>
       </el-card>
@@ -73,10 +73,12 @@
         <hr>
         <el-row :gutter="10" v-for="item in otherArr">
           <el-col :span="10">
-            <img :src="'http://localhost:8080'+item.imgUrl" style="width:100%;">
+            <router-link :to="'/detail?id='+item.id">
+            <img :src="'http://localhost:8080'+item.imgUrl" style="width:100%;"></router-link>
           </el-col>
           <el-col :span="14">
-            <p style="height:38px;margin-top:0;">{{ item.title }}</p>
+            <router-link :to="'/detail?id='+item.id">
+            <p class="title_p">{{ item.title }}</p></router-link>
             <p style="color:#666;font-size:12px;margin:0;">{{ item.createTime }}</p>
           </el-col>
         </el-row>
@@ -87,13 +89,14 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {onBeforeUpdate, onMounted, ref} from "vue";
 import axios from "axios";
 //1.Define object and save content details
 const content = ref({});
 const otherArr = ref([]);
-//2.Jump and execute instantly
-onMounted(()=>{
+const hotArr = ref([]);
+//6.Define the method of initial data
+const initData = ()=>{
   //3.Get the id's address
   let id = new URLSearchParams(location.search).get('id');
   //4.Send query to backend
@@ -107,14 +110,43 @@ onMounted(()=>{
       })
     }
   })
+  //5.Query for popular articles
+  axios.get('http://localhost:8080/v1/contents/hot').then((response)=>{
+  if(response.data.code == 2001){
+    hotArr.value = response.data.data;
+  }
+  })
+}
+//2.Jump and execute instantly
+onMounted(()=> {
+  initData();
 })
-
-
-
+//8.Opposite of onMounted()
+onBeforeUpdate(()=>{
+  initData();
+})
 </script>
 
 
 <style scoped>
+.title_p{
+  height: 40px;
+  margin-top:0px;
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  color:orange;
+
+}
+a {
+  color:#333;
+  text-decoration:none;
+}
+a:hover{
+  font-weight: bold;
+  color: orange;
+}
 #head-div {
   height: 90px;
   background-image: url("/public/imgs/avarbg.jpg");
@@ -123,5 +155,7 @@ onMounted(()=>{
   font-weight:bold;
   color:orange;
   position:relative;
+  top: 3px;
+  right: 5px;
 }
 </style>
