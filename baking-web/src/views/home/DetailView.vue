@@ -3,15 +3,22 @@
   <el-row :gutter="10" style="width: 1200px;margin: 0 auto;">
     <el-col :span="18">
       <el-card>
-        <h1 style="color:orange;text-align:center;">Fancy cream bread</h1>
+        <h1 style="color:orange;text-align:center;">{{ content.title }}</h1>
         <p style="font-size:12px;color:#666;text-align:center;">
-          Author：Michael | Release time: 2025/3/19 | Views： 37285
+          Author：{{ content.nickname }} | Release time: {{ content.createTime }} | Views： {{ content.viewCount }}
         </p>
         <hr>
+        <div  v-if="content.type!=2">
         <el-card>
           <span style="color:#0aa1ed;font-weight:bold;">Abstract：</span>
-          This is abstract
+          {{ content.brief }}
         </el-card>
+          <img src="/imgs/bread.jpg" style="width:100%;">
+          <div v-html="content.content"></div>
+        </div>
+        <div v-else>
+          <video :src="'http://localhost:8080'+content.videoUrl" controls type="video/mp4" style="width:100%;"></video>
+        </div>
         <p>This is the main part</p>
         <img src="/imgs/bread.jpg" style="width:100%;">
       </el-card>
@@ -40,11 +47,11 @@
       <el-card>
         <div id="head-div"></div>
         <div style="text-align:center;position:relative;bottom:45px;">
-          <el-avatar :size="90" src="/imgs/head.jpg" style="border:5px solid #fff;"></el-avatar>
-          <p style="font-size:20px;font-weight:bold;margin: 5px 0;">Michael</p>
+          <el-avatar :size="90" :src="'http://localhost:8080'+content.userImgUrl" style="border:5px solid #fff;"></el-avatar>
+          <p style="font-size:20px;font-weight:bold;margin: 5px 0;">{{ content.nickname }}</p>
           <el-icon class="head-icon"><Edit/></el-icon><span>Author</span>
           <br>
-          <el-icon class="head-icon"><Clock/></el-icon><span>2025/03/19</span>
+          <el-icon class="head-icon"><Clock/></el-icon><span>{{ content.createTime }}</span>
         </div>
       </el-card>
 
@@ -64,13 +71,13 @@
       <el-card style="margin-top:10px;">
         <h2>Other articles</h2>
         <hr>
-        <el-row :gutter="10" v-for="item in 4">
+        <el-row :gutter="10" v-for="item in otherArr">
           <el-col :span="10">
-            <img src="/imgs/a.jpg" style="width:100%;">
+            <img :src="'http://localhost:8080'+item.imgUrl" style="width:100%;">
           </el-col>
           <el-col :span="14">
-            <p style="height:38px;margin-top:0;">This is the topic</p>
-            <p style="color:#666;font-size:12px;margin:0;">2025/03/19</p>
+            <p style="height:38px;margin-top:0;">{{ item.title }}</p>
+            <p style="color:#666;font-size:12px;margin:0;">{{ item.createTime }}</p>
           </el-col>
         </el-row>
       </el-card>
@@ -80,8 +87,32 @@
 </template>
 
 <script setup>
+import {onMounted, ref} from "vue";
+import axios from "axios";
+//1.Define object and save content details
+const content = ref({});
+const otherArr = ref([]);
+//2.Jump and execute instantly
+onMounted(()=>{
+  //3.Get the id's address
+  let id = new URLSearchParams(location.search).get('id');
+  //4.Send query to backend
+  axios.get('http://localhost:8080/v1/contents/'+id+'/detail').then((response)=>{
+    if(response.data.code == 2001){
+      content.value = response.data.data;
+      axios.get('http://localhost:8080/v1/contents'+content.value.userId + '/other').then((response)=>{
+        if(response.data.code ==2001){
+          otherArr.value = response.data.data;
+        }
+      })
+    }
+  })
+})
+
+
 
 </script>
+
 
 <style scoped>
 #head-div {
