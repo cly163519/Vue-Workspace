@@ -25,12 +25,21 @@
 </style>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {onBeforeUpdate, onMounted, ref} from "vue";
 import axios from "axios";
 
 const contentArr = ref([]);
 
-onMounted(()=>{
+const loadContents = ()=>{
+  //Determine whether it contains ‘wd’; if it does, it is a keyword search.
+  if(location.search.includes('wd')){
+    let wd = new URLSearchParams(location.search).get('wd');
+    axios.get('http://localhost:8080/v1/contents'+wd+'/search').then((response)=>{
+      if(response.data.code==2001){
+        contentArr.value = response.data.data;
+      }
+    })
+  }else{
   let type = new URLSearchParams(location.search).get('type');
   console.log(type);
   axios.get('http://localhost:8080/v1/contents/'+type+'/type').then((response)=>{
@@ -38,5 +47,12 @@ onMounted(()=>{
       contentArr.value = response.data.data;
     }
   })
+}
+}
+onMounted(()=>{
+  loadContents();
+})
+onBeforeUpdate(()=>{
+  loadContents();
 })
 </script>
