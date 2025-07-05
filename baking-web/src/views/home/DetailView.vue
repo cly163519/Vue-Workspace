@@ -27,8 +27,8 @@
         <p>Comments</p>
         <hr>
         <el-row :gutter="10">
-          <el-col :span="22"><el-input placeholder="Please Enter"></el-input></el-col>
-          <el-col ：span="2"><el-button>Release</el-button></el-col>
+          <el-col :span="22"><el-input placeholder="Please Enter" v-model="comment.content"></el-input></el-col>
+          <el-col ：span="2"><el-button @click="post()">Release</el-button></el-col>
         </el-row>
         <el-row :gutter="10" v-for="item in 6" style="margin: 10px;">
           <el-col :span="2">
@@ -91,10 +91,31 @@
 <script setup>
 import {onBeforeUpdate, onMounted, ref} from "vue";
 import axios from "axios";
+import {ElMessage} from "element-plus";
+import qs from "qs";
+
 //1.Define object and save content details
 const content = ref({});
 const otherArr = ref([]);
 const hotArr = ref([]);
+const comment = ref({content: '',userId:'',contentId:''});
+
+const post = ()=>{
+  let user = localStorage.user?JSON.parse(localStorage.user):null;
+  if(user==null){
+    alert('Please login!');
+    return;
+  }
+  comment.value.userId = user.id;
+  comment.value.contentId = content.value.id;
+  let data = qs.stringify(comment.value);
+  axios.post('http://localhost:8080/v1/comments/add-new',data).then((response)=>{
+    if(response.data.code == 2001){
+      ElMessage.success('Finished comment!');
+    }
+  })
+}
+
 //6.Define the method of initial data
 const initData = ()=>{
   //3.Get the id's address
