@@ -6,8 +6,8 @@
       <el-header style="background-color:#368;line-height:60px;">
         <h1 style="color:#fff;font-size:30px;margin:0;">
           Baking Web Admin System
-          <el-button style="float:right;margin:14px 0 0 5px;">Logout</el-button>
-          <span style="font-size:20px;float:right;">Welcome back!</span>
+          <el-button style="float:right;margin:14px 0 0 5px;" @click="logout()">Logout</el-button>
+          <span style="font-size:20px;float:right;">Welcome back, {{ user.nickname }}!</span>
         </h1>
       </el-header>
       <el-container>
@@ -36,5 +36,14 @@
 </style>
 
 <script setup>
+import {ref} from "vue";
+import router from "@/router";
 
+const user = ref(localStorage.user?JSON.parse(localStorage.user):null);
+const logout = ()=>{
+  if(confirm('Are you sure logout?')){
+    localStorage.clear();
+    router.push('/');
+  }
+}
 </script>
