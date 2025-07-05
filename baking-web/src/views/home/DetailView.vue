@@ -27,17 +27,18 @@
         <p>Comments</p>
         <hr>
         <el-row :gutter="10">
-          <el-col :span="22"><el-input placeholder="Please Enter" v-model="comment.content"></el-input></el-col>
+          <el-col :span="22"><el-input placeholder="Please Enter" v-model="comment.content"
+          @keydown.enter="post()"></el-input></el-col>
           <el-col ：span="2"><el-button @click="post()">Release</el-button></el-col>
         </el-row>
-        <el-row :gutter="10" v-for="item in 6" style="margin: 10px;">
+        <el-row :gutter="10" v-for="item in commentArr" style="margin: 10px;">
           <el-col :span="2">
-            <el-avatar style="margin:10px;"><img src="/imgs/head.jpg"></el-avatar>
+            <el-avatar style="margin:10px;"><img :src="'http://localhost:8080'+item.userImgUrl"></el-avatar>
           </el-col>
           <el-col :span="22">
-            <p style="color:orange;font-weight:bold;margin: 0;font-size: 15px;">Michael</p>
-            <p style="margin:2px 0;font-size: 13px;">Delicious</p>
-            <p style="font-size:12px;color:#666;margin:0;">2025/3/19 09:74:38</p>
+            <p style="color:orange;font-weight:bold;margin: 0;font-size: 15px;">{{ item.nickname }}</p>
+            <p style="margin:2px 0;font-size: 13px;">{{ item.content }}</p>
+            <p style="font-size:12px;color:#666;margin:0;">{{ item.createTime }}</p>
           </el-col>
         </el-row>
       </el-card>
@@ -98,12 +99,26 @@ import qs from "qs";
 const content = ref({});
 const otherArr = ref([]);
 const hotArr = ref([]);
-const comment = ref({content: '',userId:'',contentId:''});
+const comment = ref({content: ''});
+const commentArr = ref([]);
+
+//Loading comments requires passing the article ID.
+const loadComments = (id)=>{
+  axios.get('http://localhost:8080/v1/comments/'+id).then((response)=>{
+    if(response.data.code==2001){
+      commentArr.value = response.data.data;
+    }
+  })
+}
 
 const post = ()=>{
   let user = localStorage.user?JSON.parse(localStorage.user):null;
   if(user==null){
     alert('Please login!');
+    return;
+  }
+  if(comment.value.content==''){
+    ElMessage.error('Comment cannot be empty');
     return;
   }
   comment.value.userId = user.id;
@@ -112,6 +127,8 @@ const post = ()=>{
   axios.post('http://localhost:8080/v1/comments/add-new',data).then((response)=>{
     if(response.data.code == 2001){
       ElMessage.success('Finished comment!');
+      loadComments(content.value.id);
+      comment.value.content = '';
     }
   })
 }
@@ -120,6 +137,7 @@ const post = ()=>{
 const initData = ()=>{
   //3.Get the id's address
   let id = new URLSearchParams(location.search).get('id');
+  loadComments(id);
   //4.Send query to backend
   axios.get('http://localhost:8080/v1/contents/'+id+'/detail').then((response)=>{
     if(response.data.code == 2001){
