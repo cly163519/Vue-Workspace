@@ -42,7 +42,7 @@
     </el-row>
     <div style="text-align: center;margin:10px;">
       <!--  点击按钮，跳转ListView页面-->
-      <el-button @click="router.push('/list')">Click more</el-button>
+      <el-button @click="router.push('/list?type=1')">Click more</el-button>
     </div>
 <!--   4. 烘焙食谱结束-->
 <!--   5. 烘焙视频开始-->
@@ -77,7 +77,7 @@
     </el-row>
     <div style="text-align: center; margin:10px;">
       <!--  8跳转listview列表-->
-      <el-button @click="router.push('/list')">Click more</el-button>
+      <el-button @click="router.push('/list?type=2')">Click more</el-button>
     </div>
       <!-- 5烘焙视频结束-->
       <!-- 6行业资讯开始-->
@@ -111,7 +111,7 @@
     </el-row>
     <div style="text-align: center;margin:10px;">
       <!--8点击跳转-->
-      <el-button @click="router.push('/list')">Click more</el-button>
+      <el-button @click="router.push('/list?type=3')">Click more</el-button>
     </div>
     <!--6行业资讯结束-->
   </div>
